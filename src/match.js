@@ -1,25 +1,10 @@
 Pact.Match = Pact.Match || {};
 
 (function() {
-
-    function isUndefined(value) {
-        return typeof value === 'undefined'
-    }
-
-    function isNull(value) {
-        return value === null;
-    }
-
-    function isUndefinedOrNull(value) {
-        return isNull(value) || isUndefined(value);
-    }
-
-    function isFunction(fn) {
-        return typeof fn === 'function';
-    }
-
     this.term = function(term) {
-        if (!term || isUndefined(term.generate) || isUndefined(term.matcher)) {
+        if (!term ||
+            typeof term.generate === 'undefined' ||
+            typeof term.matcher === 'undefined') {
             throw new Error('Error creating a Pact Term. Please provide an object containing \'generate\' and \'matcher\' properties');
         }
 
@@ -37,20 +22,21 @@ Pact.Match = Pact.Match || {};
     };
 
     this.eachLike = function(content, options) {
-        if(isUndefined(content)) {
+        if(typeof content === 'undefined') {
             throw new Error('Error creating a Pact eachLike. Please provide a content argument');
         }
 
         return {
             "json_class": 'Pact::ArrayLike',
             "contents": content,
-            "min": (!options || isUndefinedOrNull(options.min)) ? 1 : options.min
+            "min": (!options || typeof options.min === 'undefined' || options.min == null) ? 1 : options.min
         };
     } ;
 
     this.somethingLike = function(value) {
-        if (isUndefined(value) || isFunction(value)) {
-            throw new Error('Error creating a Pact SomethingLike Match. Value cannot be a function or undefined');
+        if (typeof value === 'undefined' ||
+            typeof value === 'function') {
+            throw new Error('Error creating a Pact somethingLike Match. Value cannot be a function or undefined');
         }
 
         return {

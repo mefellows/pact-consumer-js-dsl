@@ -197,6 +197,39 @@ provider
 
 [flexible-matching]: https://github.com/realestate-com-au/pact/wiki/Regular-expressions-and-type-matching-with-Pact
 
+#### Match based on arrays
+
+Matching provides the ability to specify flexible length arrays. For example:
+
+```javascript
+Pact.Match.eachLike(obj) // min will defauk to 1
+Pact.Match.eachLike(obj, { min: 1 })
+```
+
+```javascript
+Pact.Match.eachLike(Pact.Match.eachLike({}), { min: 1 })
+```
+
+```javascript
+provider
+  .given('there is a product')
+  .uponReceiving("request for products")
+  .withRequest({
+    method: "get",
+    path: "/products",
+    query: {
+      category: "pizza"
+    }
+  })
+  .willRespondWith(
+    200,
+    {"Content-Type": "application/json"},
+    {
+      "collection": Pact.Match.eachLike([], {min: 1})
+    }
+  );
+```
+
 ### Examples
 
 #### Web Example
